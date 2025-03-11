@@ -1,7 +1,9 @@
 # ARCTIC-FLOW Repository for the Open Science Code for the surface density and
 freshwater flux
 
-# Example data The Near real-time monthly ARMOR3D data is a good starting point
+# Example data 
+
+The Near real-time monthly ARMOR3D data is a good starting point
 to assess the functionality and performance of the tool. The data can be found
 [here](https://data.marine.copernicus.eu/product/MULTIOBS_GLO_PHY_TSUV_3D_MYNRT_015_012/download?dataset=dataset-armor-3d-nrt-monthly_202012)
 For the variables choose the following:
