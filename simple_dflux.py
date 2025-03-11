@@ -317,7 +317,7 @@ TODO                   -spatial_res_type, type of spatial grid [DEG | KM]
 
     if kwargs['to_netcdf']:
         filename = "fluxes.nc"
-        print('\nWriting all fluxes to ' + filename, end="" , flush=True)
+        print('\nWriting all fluxes to ' + filename + '...', end="" , flush=True)
         comp = dict(zlib=True, complevel=5)
         encoding = {var: comp for var in ds.data_vars}
         ds.to_netcdf(filename, encoding=encoding)
