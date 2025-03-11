@@ -22,7 +22,7 @@ You will need to create a user account and save the file in the directory where
 you cloned the repository.  With the example data downloaded, you can proceed
 to modify the test.py file in the following way:
 
-- nc_name = the filename of the example data you just downloaded
+- `nc_name = [the filename of the example data you just downloaded]`
 
 the best way to run the tool is to:
 
@@ -34,9 +34,9 @@ the best way to run the tool is to:
 
 You must have the following packages installed:
 
-- xarray: pip install xarray -> for all things related to netcdf 
-- numpy: pip install numpy -> for numeric operations
-- gsw: pip install gsw -> Thermodynamic equation of state for seawater related
+- xarray: `pip install xarray` -> for all things related to netcdf 
+- numpy: `pip install numpy` -> for numeric operations
+- gsw: `pip install gsw` -> Thermodynamic equation of state for seawater related
   functions
 
 # To-Do
