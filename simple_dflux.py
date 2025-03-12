@@ -33,7 +33,7 @@ TODO                   -spatial_res_type, type of spatial grid [DEG | KM]
 
     Notes
     -----
-    ``derivative_degrees2meters`` computes first order derivative the of an ocean scalar, using
+    ``derivative_degrees2meters`` computes first order derivative of an ocean scalar, using
     the FTCS (Forward time-centered space) differncing scheme. Deals with irregular grid sizes by 
     calculating latitudinal distances at each latitude (instead of assigning a constant distance)
     and so when calculating the longitude distances these values are used
@@ -48,14 +48,14 @@ TODO                   -spatial_res_type, type of spatial grid [DEG | KM]
 
 
     if kwargs['spatial_resolution'] == 'DEG':
-        earth_radius = 6371 * 1000
+        earth_radius = 6370 * 1000
         lat_degree_distance = (2 * np.pi * earth_radius) / 360
 
         res = np.gradient(ds[kwargs['lat']])
         distance_lat = lat_degree_distance * res
-        lat_grid, lon_grid = np.meshgrid(ds[kwargs['lon']], ds[kwargs['lat']])
-        res_lon_meters = np.gradient(np.abs(lon_grid))[0] * lat_degree_distance
-        distance_lon = res_lon_meters * np.cos(np.radians(lon_grid))
+        lon_grid, lat_grid = np.meshgrid(ds[kwargs['lon']], ds[kwargs['lat']])
+        res_lon_meters = np.abs(np.gradient(lon_grid)[1] * lat_degree_distance)
+        distance_lon = res_lon_meters * np.cos(np.radians(lat_grid))
 
         dlon = np.nanmean(dlon, 0) 
         dlat = np.nanmean(dlat, 0) 

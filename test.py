@@ -1,9 +1,9 @@
 from simple_dflux import calculate_all_fluxes
 import xarray as xr
 
-nc_name = ''
+nc_name = 'test_data.nc'
 
-ds = xr.open_dataset(nc_name)
+ds = xr.open_dataset(nc_name, engine='netcdf4')
 #NOTE i think including the depth dimension as 0 might be a good thing (we explicitly state 
 # that the output is relative to the first depth [it might be 5 meters or surface])
 ds = ds.isel({'depth': 0})

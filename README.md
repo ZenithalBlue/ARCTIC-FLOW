@@ -23,7 +23,6 @@ you cloned the repository.  With the example data downloaded, you can proceed
 to modify the test.py file in the following way:
 
 - `nc_name = [the filename of the example data you just downloaded]`
-
 the best way to run the tool is to:
 
 - cd into the cloned repository directory, 
