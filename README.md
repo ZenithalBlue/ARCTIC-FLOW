@@ -70,9 +70,9 @@ where, 'depth' is the name of the depth dimension in the xarray dataset object (
 
 a **keywords dictionary** is central to the functionality of the tool. It is defined in the 
 following way:
-`
+```python
 kwargs = {
-        'sss': 'name of the salinity variable in the provided netCDF',\
+        'sss': 'name of the salinity variable in the provided netCDF', 
         'sst': 'name of the temperature variable in the provided netCDF',
         'lat': 'name of the latitude dimension in the provided netCDF',
         'lon': 'name of the longitude dimension in the provided netCDF', 
@@ -83,7 +83,7 @@ kwargs = {
         'u': 'name of the eastward component of velocity variable in the provided netCDF',
         'v': 'name of the northward component of velocity variable in the provided netCDF',
         'mld': 'name of the mixed layer depth variable in the provided netCDF'}
-`
+```
 
 ```python
 import xarray as xr
