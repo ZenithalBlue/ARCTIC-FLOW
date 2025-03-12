@@ -4,7 +4,8 @@
 `FluxTool` is a computational tool for estimating oceanic **density flux** using a **kinematic approach**, as outlined in [Piracha et al. (2023)](https://doi.org/10.3389/fmars.2023.1020153). Unlike traditional thermodynamic methods relying on heat and freshwater fluxes, this tool leverages **satellite-derived material derivatives** of **Sea Surface Temperature (SST)** and **Sea Surface Salinity (SSS)** to compute density flux at the ocean surface.  
 
 Additionally, the tool provides:  
-- Material derivatives of **SST** and **SSS**  
+- Material derivatives of **SSS** **SSD** (where, SSS and SSD refer to the Sea Surface Salinity and 
+Density, respectively)
 - Their respective products with **Mixed Layer Depth (MLD)**  
 - An analysis of the role of **freshwater fluxes** on **deep water formation** in the **Nordic Seas**  
 
