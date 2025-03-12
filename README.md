@@ -72,7 +72,7 @@ a **keywords dictionary** is central to the functionality of the tool. It is def
 following way:
 `
 kwargs = {
-        'sss': 'name of the salinity variable in the provided netCDF',
+        'sss': 'name of the salinity variable in the provided netCDF',\
         'sst': 'name of the temperature variable in the provided netCDF',
         'lat': 'name of the latitude dimension in the provided netCDF',
         'lon': 'name of the longitude dimension in the provided netCDF', 
@@ -106,7 +106,7 @@ ds = open_dataset(PATH TO YOUR NETCDF FILE)
 fluxes = calculate_all_fluxes(ds, kwargs)
 ```
 
-The `fluxes` output is a xarray Dataset object with the same dimension as the provided netCDF.
+The `fluxes` output is an xarray Dataset object with the same dimension as the provided netCDF.
 **!The time dimension of the output will be 1 less then the input (this is due to the fact that the 
 fluxes are computed from via derivatives)**
 
@@ -159,14 +159,3 @@ If you use this tool in your research, please cite:
 ## **📬 Contact**
 For questions or collaboration opportunities, reach out to:  
 📧 **Aqeel Piracha** - [piracha.aqeel1@gmail.com](mailto:piracha.aqeel1@gmail.com)  
-
-# To-Do
-
-- [ ] define simple_dflux.py as a class (with the related functions being
-  recoded as methods). Thus, taking advantage of pythons OOP functionality.
-- [ ] update this README to describe density flux, what it is, how it's
-  calculated, it's importance.
-- [ ] complete the preprocessor (preprocessor.py), which will eventually be a
-  scrippt to take all the necessary input variable from disparate netCDF files
-  and map them to a unified space and time grid to then be passed to the tool
-  for calculating outputs. 
