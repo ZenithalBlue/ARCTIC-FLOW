@@ -31,12 +31,8 @@ This tool follows the **kinematic framework** described in **Piracha et al. (202
      ```math
      -\rho\alpha\frac{D T}{Dt}, \quad \rho\beta\frac{D S}{Dt}
      ```  
-
-     where alpha and beta are the thermal and haline expantion and contraction coefficients, 
-     respectively.
-
-     the role of alpha and beta are to quantify how density changes with respect to temperature and 
-     salinity
+   where \( \alpha, \beta, \rho \) are the thermal expansion, haline contraction coefficients, and 
+   density, respectively.
 
 4. **Analyze Freshwater’s Role in Deep Water Formation**  
    - Freshwater forcing impacts buoyancy and water mass stability in the **Nordic Seas**.  
