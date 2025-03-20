@@ -296,6 +296,7 @@ def calculate_all_fluxes(ds, kwargs):
     a time grid which is 1/2 forward shifted (relative to the input) 
     """
     # adding ssd to the dataset to compute its fluxes alone 
+    print('Initialising variables...', end="" , flush=True) 
     ssd = gsw.rho(ds[kwargs['sss']].data, ds[kwargs['sst']].data, 0)
     ds['ssd'] = ([kwargs['time'], kwargs['lat'], kwargs['lon']], ssd)
 
