@@ -46,7 +46,8 @@ This tool follows the **kinematic framework** described in **Piracha et al. (202
 
 You must have the following packages installed:
 
-- xarray: `pip install xarray` -> for all things related to netcdf 
+- xarray: `pip install xarray` -> for all things related to netCDF 
+- netCDF4: `pip install netCDF4` -> for working with netCDF4 files
 - numpy: `pip install numpy` -> for numeric operations
 - gsw: `pip install gsw` -> Thermodynamic equation of state for seawater related
   functions
