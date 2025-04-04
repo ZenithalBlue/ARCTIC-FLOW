@@ -25,28 +25,30 @@ class pyFlux:
         ds (xarray.Dataset): The dataset containing oceanographic variables.
     """
 
-    def __init__(self, ds):
+    def __init__(self, ds, **kwargs):
         """
         Initialize the pyFlux class with an xarray dataset.
 
         Parameters:
             ds (xarray.Dataset): The dataset containing oceanographic variables.
         """
+        # Extract relevant variable names
+        time, lat, lon = kwargs['time'], kwargs['lat'], kwargs['lon']
         self.ds = ds  # Store dataset
 
         # Compute spatial resolution in degrees
-        self.resolution_latitude = np.gradient(self.ds.latitude.values)
-        self.resolution_longitude = np.gradient(self.ds.longitude.values)
+        self.resolution_latitude = np.gradient(self.ds[lat].values)
+        self.resolution_longitude = np.gradient(self.ds[lon].values)
 
         # Convert latitude resolution to meters
         self.resolution_latitude_meters = self.resolution_latitude * degree_distance
 
         # Compute longitude resolution in meters, considering latitude dependence
-        meshgrid_lon, meshgrid_lat = np.meshgrid(self.ds.longitude.values, self.ds.latitude.values)
+        meshgrid_lon, meshgrid_lat = np.meshgrid(self.ds[lon].values, self.ds[lat].values)
         self.resolution_longitude_meters = np.gradient(meshgrid_lon)[1] * degree_distance * np.cos(np.radians(meshgrid_lat))
 
         # Compute time resolution
-        self.resolution_time = np.gradient(self.ds.time.values)
+        self.resolution_time = np.gradient(self.ds[time].values)
 
     def derivative_degrees2meters(self, var, timeInd, **kwargs):
         """
@@ -104,7 +106,7 @@ class pyFlux:
             "derivative_longitude": ([lat, lon], derivative_longitude)
         }, coords={lat: ds[lat], lon: ds[lon], time: ds_diff})
 
-        return pyFlux(ds)
+        return pyFlux(ds, **kwargs)
 
     def material_derivative(self, var, timeInd, **kwargs):
         """
@@ -160,7 +162,7 @@ class pyFlux:
             "material_derivative": ([lat, lon], material_derivative.values)
         }, coords={lat: ds[lat], lon: ds[lon], time: ds_diff})
 
-        return pyFlux(ds)
+        return pyFlux(ds, **kwargs)
 
     def flux(self, var, timeInd, **kwargs):
         """
@@ -207,7 +209,7 @@ class pyFlux:
             "flux": ([lat, lon], flux.values)
         }, coords={lat: ds[lat], lon: ds[lon], time: ds_diff})
 
-        return pyFlux(ds), material_derivative
+        return pyFlux(ds, **kwargs), material_derivative
 
     def calculate_density_flux(self, flux_components, timeInd, **kwargs):
         """
@@ -262,7 +264,7 @@ class pyFlux:
             "dflux_sst": ([lat, lon], dflux_sst),
         }, coords={lat: ds[lat], lon: ds[lon], time: ds_diff})
 
-        return pyFlux(ds)
+        return pyFlux(ds, **kwargs)
 
     def calculate_all_fluxes(self, **kwargs):
         """
@@ -369,7 +371,7 @@ class pyFlux:
 
         print('\nDone', flush=True)
 
-        return pyFlux(ds)
+        return pyFlux(ds, **kwargs)
 
     def map_plot(self, var, timeInd, **kwargs):
         """
@@ -442,7 +444,6 @@ class pyFlux:
         if kwargs['savefig']:
             plt.savefig(kwargs['imname'] + '.jpg', dpi=600)
             plt.close()
-
 
     def print_info(self):
         """

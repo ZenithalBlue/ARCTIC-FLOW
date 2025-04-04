@@ -1,13 +1,17 @@
-# **DensityFluxTool: A Kinematic Framework for Water Mass Transformation**
+# **pyFlux: A Kinematic Framework for Water Mass Transformation**
 
 ## **📌 Description**  
-`FluxTool` is a computational tool for estimating oceanic **density flux** using a **kinematic approach**, as outlined in [Piracha et al. (2023)](https://doi.org/10.3389/fmars.2023.1020153). Unlike traditional thermodynamic methods relying on heat and freshwater fluxes, this tool leverages **satellite-derived material derivatives** of **Sea Surface Temperature (SST)** and **Sea Surface Salinity (SSS)** to compute density flux at the ocean surface.  
+`pyFlux` is a computational tool for estimating oceanic **density flux** using a **kinematic approach**, as outlined in [Piracha et al. (2023)](https://doi.org/10.3389/fmars.2023.1020153). Unlike traditional thermodynamic methods relying on heat and freshwater fluxes, this tool leverages **satellite-derived material derivatives** of **Sea Surface Temperature (SST)** and **Sea Surface Salinity (SSS)** to compute density flux at the ocean surface.  
 
 Additionally, the tool provides:  
 - Material derivatives of **SSS** **SSD** (where, SSS and SSD refer to the Sea Surface Salinity and 
 Density, respectively)
 - Their respective products with **Mixed Layer Depth (MLD)**  
 - An analysis of the role of **freshwater fluxes** on **deep water formation** in the **Nordic Seas**  
+
+Essentially, pyFlux acts as a wrapper around an existing xarray dataset, allowing users to compute density fluxes and their components with ease. 
+Also, it allows for a better calculation of derivatives and the material derivative (which is central to the approach employed). 
+The tool is designed to be user-friendly, making it accessible for researchers and practitioners in oceanography and related fields.
 
 ---
 
@@ -49,8 +53,9 @@ You must have the following packages installed:
 - xarray: `pip install xarray` -> for all things related to netCDF 
 - netCDF4: `pip install netCDF4` -> for working with netCDF4 files
 - numpy: `pip install numpy` -> for numeric operations
-- gsw: `pip install gsw` -> Thermodynamic equation of state for seawater related
-  functions
+- gsw: `pip install gsw` -> Thermodynamic equation of state for seawater related functions
+- cartopy: `pip install cartopy` -> for geospatial plotting  
+- matplotlib: `pip install matplotlib` -> for plotting
 
 ### **Installation Steps**
 ```sh
@@ -80,7 +85,6 @@ kwargs = {
         'lon': 'name of the longitude dimension in the provided netCDF', 
         'time': 'name of the time dimension in the provided netCDF',
         'time_resolution': 'time resolution of netCDF dataset', 
-        'spatial_resolution': 'spatial resolution of netCDF dataset',
         'to_netcdf': True|False (to additionally save output as a netCDF file named fluxes.nc),
         'u': 'name of the eastward component of velocity variable in the provided netCDF',
         'v': 'name of the northward component of velocity variable in the provided netCDF',
@@ -89,7 +93,7 @@ kwargs = {
 
 ```python
 import xarray as xr
-From FluxTool import calculate_all_fluxes
+From pyFlux import pyFlux as pf
 
 # Load dataset
 '''
@@ -104,13 +108,19 @@ ds = open_dataset(PATH TO YOUR NETCDF FILE)
 # define a key word argument dictionary
 # see the preceeding section for how to define the dictionary
 
-# Compute density flux
-fluxes = calculate_all_fluxes(ds, kwargs)
+## Create an example keyword argument dictionary for satellites
+# Calculate sea surface density and add it to the dataset (later versions of the tool will do this automatically)
+ssd = gsw.rho(ds[kwargs['sss']].data, ds[kwargs['sst']].data, 0)
+ds['ssd'] = ([kwargs['time'], kwargs['lat'], kwargs['lon']], ssd)
+# Create a pyFlux object
+p = pf(ds, **kwargs)
+# Calculate the fluxes
+fluxes = p.calculate_all_fluxes(**kwargs)
 ```
 
-The `fluxes` output is an xarray Dataset object with the same dimension as the provided netCDF.
+The `fluxes` output is itself a pyFlux object and so you can call all the methods defined in the pyFlux class on it. 
 **!The time dimension of the output will be 1 less then the input (this is due to the fact that the 
-fluxes are computed from via derivatives)**
+fluxes are computed via derivatives)**
 
 ### **A test case**
 
