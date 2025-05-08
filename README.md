@@ -1,7 +1,7 @@
 # **pyFlux: A Kinematic Framework for Water Mass Transformation**
 
 ## **📌 Description**  
-`pyFlux` is a computational tool for estimating oceanic **density flux** using a **kinematic approach**, as outlined in [Piracha et al. (2023)](https://doi.org/10.3389/fmars.2023.1020153). Unlike traditional thermodynamic methods relying on heat and freshwater fluxes, this tool leverages **satellite-derived material derivatives** of **Sea Surface Temperature (SST)** and **Sea Surface Salinity (SSS)** to compute density flux at the ocean surface.  
+`pyFlux` is a computational tool for estimating oceanic **density and freshwater fluxes** using a **kinematic approach**, as outlined in [Piracha et al. (2023)](https://doi.org/10.3389/fmars.2023.1020153). Unlike traditional thermodynamic methods relying on heat and freshwater fluxes, this tool leverages **material derivatives** of **Sea Surface Temperature (SST)** and **Sea Surface Salinity (SSS)** to compute density and freshwater fluxes at the ocean surface, and additionally allows for the diagnosis of their relative roles in water mass dynamics.  
 
 Additionally, the tool provides:  
 - Material derivatives of **SSS** **SSD** (where, SSS and SSD refer to the Sea Surface Salinity and 
