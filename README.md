@@ -1,7 +1,7 @@
 # **pyFlux: A tool for diagnosing surface water mass dynamics**
 
 ## **📌 Description**  
-This Python-based tool provides a framework for analyzing surface water mass dynamics using satellite-derived oceanographic data. It computes key metrics such as density flux, thermal and haline components, and water mass transformation rates, leveraging surface kinematics to offer insights into ocean circulation processes. Designed for oceanographers, researchers, and enthusiasts, the tool helps diagnose and visualize the impact of surface variables like sea surface temperature (SST), sea surface salinity (SSS), and sea surface density (SSD) on water mass dynamics.
+`pyFlux` is a computational tool for estimating oceanic **density and freshwater fluxes** using a **kinematic approach**, as outlined in [Piracha et al. (2023)](https://doi.org/10.3389/fmars.2023.1020153). Unlike traditional thermodynamic methods relying on heat and freshwater fluxes, this tool leverages **material derivatives** of **Sea Surface Temperature (SST)** and **Sea Surface Salinity (SSS)** to compute density and freshwater fluxes at the ocean surface, and additionally allows for the diagnosis of their relative roles in water mass dynamics.  
 
 Key features:
 * Calculate density flux components, freshwater fluxes  and their material derivatives
