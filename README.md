@@ -1,13 +1,12 @@
-# **pyFlux: A Kinematic Framework for Water Mass Transformation**
+# **pyFlux: A tool for diagnosing surface water mass dynamics**
 
 ## **📌 Description**  
-`pyFlux` is a computational tool for estimating oceanic **density and freshwater fluxes** using a **kinematic approach**, as outlined in [Piracha et al. (2023)](https://doi.org/10.3389/fmars.2023.1020153). Unlike traditional thermodynamic methods relying on heat and freshwater fluxes, this tool leverages **material derivatives** of **Sea Surface Temperature (SST)** and **Sea Surface Salinity (SSS)** to compute density and freshwater fluxes at the ocean surface, and additionally allows for the diagnosis of their relative roles in water mass dynamics.  
+This Python-based tool provides a framework for analyzing surface water mass dynamics using satellite-derived oceanographic data. It computes key metrics such as density flux, thermal and haline components, and water mass transformation rates, leveraging surface kinematics to offer insights into ocean circulation processes. Designed for oceanographers, researchers, and enthusiasts, the tool helps diagnose and visualize the impact of surface variables like sea surface temperature (SST), sea surface salinity (SSS), and sea surface density (SSD) on water mass dynamics.
 
-Additionally, the tool provides:  
-- Material derivatives of **SSS** **SSD** (where, SSS and SSD refer to the Sea Surface Salinity and 
-Density, respectively)
-- Their respective products with **Mixed Layer Depth (MLD)**  
-- An analysis of the role of **freshwater fluxes** on **deep water formation** in the **Nordic Seas**  
+Key features:
+* Calculate density flux components, freshwater fluxes  and their material derivatives
+* Visualize fluxes and oceanographic transformations
+* An analysis of the role of **freshwater fluxes** on **deep water formation** in the **Nordic Seas**  
 
 Essentially, pyFlux acts as a wrapper around an existing xarray dataset, allowing users to compute density fluxes and their components with ease. 
 Also, it allows for a better calculation of derivatives and the material derivative (which is central to the approach employed). 
