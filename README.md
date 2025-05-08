@@ -75,52 +75,80 @@ you can do this by running:
 
 where, 'depth' is the name of the depth dimension in the xarray dataset object (ds)
 
-a **keywords dictionary** is central to the functionality of the tool. It is defined in the 
-following way:
-```python
-kwargs = {
-        'sss': 'name of the salinity variable in the provided netCDF', 
-        'sst': 'name of the temperature variable in the provided netCDF',
-        'lat': 'name of the latitude dimension in the provided netCDF',
-        'lon': 'name of the longitude dimension in the provided netCDF', 
-        'time': 'name of the time dimension in the provided netCDF',
-        'time_resolution': 'time resolution of netCDF dataset', 
-        'to_netcdf': True|False (to additionally save output as a netCDF file named fluxes.nc),
-        'u': 'name of the eastward component of velocity variable in the provided netCDF',
-        'v': 'name of the northward component of velocity variable in the provided netCDF',
-        'mld': 'name of the mixed layer depth variable in the provided netCDF'}
-```
-
 ```python
 import xarray as xr
-From pyFlux import pyFlux as pf
+import preprocessor as pp
+from pyFlux import pyFlux as pf
 
-# Load dataset
-'''
-make sure that your provided dataset has the following variables
-    - sea surface salinity/temperature
-    - sea surface currrents (the eastward and northward components)
-    - mixed layer depth 
-
-'''
-ds = open_dataset(PATH TO YOUR NETCDF FILE)
-
-# define a key word argument dictionary
-# see the preceeding section for how to define the dictionary
-
-## Create an example keyword argument dictionary for satellites
-# Calculate sea surface density and add it to the dataset (later versions of the tool will do this automatically)
-ssd = gsw.rho(ds[kwargs['sss']].data, ds[kwargs['sst']].data, 0)
-ds['ssd'] = ([kwargs['time'], kwargs['lat'], kwargs['lon']], ssd)
-# Create a pyFlux object
+# 1. define data dictionary (see next section)
+# 2. preprocess the data to a common ease grid
+datasets = pp.load_data_variables(data_dict, times=range(10))
+target_grid = xr.open_dataset("ease25_grid.nc").isel({'time': 0})
+ds = pp.batch_regrid_all(datasets, target_grid_ds=target_grid, **kwargs)
+# 3. define kwargs dictionary (see next section)
+# 4. then make the pyflux object
+#  ds is an xarray dataset with all necessary variable (typically output from the preprocessing step above)
 p = pf(ds, **kwargs)
-# Calculate the fluxes
+# 5. calculating fluxes
 fluxes = p.calculate_all_fluxes(**kwargs)
+# fluxes will be a pyFlux object with an xarray datasets (ds) as one of its members containing all the fluxes
 ```
 
 The `fluxes` output is itself a pyFlux object and so you can call all the methods defined in the pyFlux class on it. 
 **!The time dimension of the output will be 1 less then the input (this is due to the fact that the 
 fluxes are computed via derivatives)**
+
+### **Defining the data dictionary**
+
+to use the `preprocessor` you need to define a data dictionary, which can be done in the following way:
+
+|          key         | value                                                  |
+|:---------------------|:-------------------------------------------------------|
+| name of sss variable | path to netCDF file containing sss data                |
+| name of sst variable | path to netCDF file containing sst data                |
+| name of u variable   | path to netCDF file containing eastward velocity data  |
+| name of v variable   | path to netCDF file containing northward velocity data |
+| name of mld variable | path to netCDF file containing mixed layer depth data  |
+
+**Even if multiple variables are stored in the same file, you still need to specify each variable separately in the dictionary with the same file path.**
+
+### **Defining the keyword arguments dictionary**
+
+a **keywords dictionary** is central to the functionality of the pyFlux class. It is defined in the 
+following way:
+
+|          key          | value                                                  |
+|:--------------------- |:-------------------------------------------------------|
+| sss                   |name of the salinity variable in the provided netCDF    |
+| sst                   |name of the temperature variable in the provided netCDF |
+| u                     |name of the eastward velocity n the provided netCDF     |
+| v                     |name of the nortward velocity variable in the provided netCDF  |
+| mld                   |name of the mld variable in the provided netCDF         |
+| lat                   |name of the latitude dimension in the provided netCDF   |
+| lon                   |name of the latitude dimension in the provided netCDF   |
+| time                  |name of the time dimension in the provided netCDF       |
+| time_resolution       |time resolution of the provided data: `D`: daily, `W`: weekly, `M`:monthly|
+| calculate_ssd         |boolean of whether to calculate sea surface density     |
+| ease                  |boolean of whether the data is on an ease Grid          |
+| ease_res              |spatial resolution of ease Grid [km]                    |
+| to_netcdf             |boolean of whether to save output to a `fluxes.nc` file |
+
+
+as well as this there are a lot of additional optional keyword arguments that can be passed to the pyFlux class.
+these include:
+
+these are limited to the `map_plot` method of the `pyFlux class`
+
+|          key          | value                                                  |
+|:--------------------- |:-------------------------------------------------------|
+| cmap                  | colormap name: Default `turbo`                         |
+| cbar                  | boolean of whether to draw colorbar: Default `True`    |
+| title                 | title of plot: Default blank                           |
+| savefig               | boolean of whether to savefig: Default `False`         |
+| imname                | if `savefig` then defines name of saved plot: Default blank           |
+| isglobal              | boolean of whether to plot a global map: Default `true`|
+| extent                | if not `isglobal` then defines region to plot: `[lon_min, lon_max, lat_min, lat_max]`|
+| cbar_label            | if `cbar` then defines colorbar title: Default blank   |
 
 ### **A test case**
 
@@ -159,6 +187,129 @@ the best way to **run the tool** is to:
 - **freshwater fluxes**
 
 ---
+
+## list of all functions and usage
+
+### Pre-processor
+
+
+def apply_nan_mask(data, mask):
+    """
+    Masks a DataArray by the NaN locations of another DataArray.
+
+    Parameters
+    ----------
+    data : xarray.DataArray
+        The DataArray to be masked.
+    mask : xarray.DataArray
+
+    Returns
+    -------
+    xarray.DataArray
+        The masked DataArray, where NaN values in the mask are applied to the data.
+    """
+
+def regrid_to_ease25(source_ds, target_grid_ds, varname, datasets, method='linear'):
+    """
+    Regrids a 2D or 3D variable (time, y, x) to a 25 km EASE grid.
+
+    This function performs horizontal interpolation of geophysical data (e.g., SST, SSS) 
+    from a regular latitude-longitude grid to a target EASE grid defined by 2D latitude 
+    and longitude coordinates. If the source dataset is already on a 2D projected grid, 
+    regridding is skipped and the original variable is returned as-is.
+
+    Parameters
+    ----------
+    source_ds : xarray.Dataset
+        The dataset containing the variable to be interpolated. Should include 1D 'lat'/'lon' or 'latitude'/'longitude'.
+    
+    target_grid_ds : xarray.Dataset
+        The dataset containing the 2D EASE grid coordinates to which the variable will be regridded.
+        This must include a variable (e.g., 'sss') used to mask the result after interpolation.
+    
+    varname : str
+        Name of the variable in `source_ds` to interpolate.
+    
+    datasets : dict
+        Dictionary containing the latitude and longitude from the source dataset.
+        Example: {'lat': source_ds['lat'], 'lon': source_ds['lon']}
+
+    method : str, optional
+        Interpolation method to use. Options are:
+        - 'linear' (default)
+        - 'nearest'
+        - 'cubic'
+        Method is passed to `xarray.DataArray.interp`.
+
+    Returns
+    -------
+    xarray.DataArray
+        The interpolated variable regridded to the EASE grid if lat/lon are 1D,
+        or the original variable if the coordinates are already 2D.
+
+    Notes
+    -----
+    - The function checks if the source coordinates are 2D; if so, interpolation is skipped.
+    - Regridding uses `xarray`'s native interpolation routines.
+    - If the data is 3D (e.g., time, lat, lon), interpolation is applied slice-by-slice over time.
+    - The function uses a mask (from 'sss' in the target grid) to clean up edge effects after regridding.
+
+    Output
+    ------
+    Example output:
+    Regridding started...
+    Regridding sst using xarray interp (regular lat/lon)...
+    sst Regridding Progress: 100%|██████████| ...
+    Regridding complete.
+    """
+
+def detect_spatial_resolution(ds, name=None):
+    """
+    Detects and prints the spatial resolution of a dataset.
+
+    This function estimates the approximate spatial resolution of an xarray Dataset 
+    by analyzing the differences between adjacent latitude and longitude values. 
+    It supports both 1D (curvilinear) and 2D (structured grid) coordinate systems. 
+    Additionally, it detects whether the dataset uses an EASE or EASE2 grid, and if so, 
+    attempts to extract and display the nominal grid resolution from the dataset's 
+    global attributes.
+
+    Parameters
+    ----------
+    ds : xarray.Dataset
+        The input dataset containing geospatial coordinates (lat/lon or latitude/longitude).
+    name : str, optional
+        An optional name for the dataset, used in the printout header.
+
+    Returns
+    -------
+    dict
+        A dictionary containing the latitude and longitude variables:
+        {
+            "lat": xarray.DataArray,
+            "lon": xarray.DataArray
+        }
+
+    Notes
+    -----
+    - The function will automatically look for standard coordinate names: 
+      "lat" / "lon" or "latitude" / "longitude".
+    - For 2D coordinates, the median difference is taken along both dimensions.
+    - If the dataset contains a global attribute named "Grid" and it includes 
+      the substring "EASE", the function will identify it as an EASE grid.
+    - Attempts to extract a numeric resolution (in km) from the grid metadata 
+      using regex.
+
+    Output
+    ------
+    Exanple output:
+    Dataset:
+      Approximate spatial resolution:
+        ∆lat ≈ 0.0417°, ∆lon ≈ 0.0417°
+      Grid type detected: EASE grid
+      EASE grid resolution: 25 km
+    """
+
 
 ## **📜 Citation**
 If you use this tool in your research, please cite:  
